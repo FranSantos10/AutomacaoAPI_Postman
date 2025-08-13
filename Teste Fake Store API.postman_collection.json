@@ -1,0 +1,254 @@
+{
+	"info": {
+		"_postman_id": "d04aa6e1-5daf-441e-a254-b3bcb9f78f57",
+		"name": "Teste Fake Store API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47511044",
+		"_collection_link": "https://franci-santos-silva10-2410734.postman.co/workspace/Franciele-Santos-da-Silva's-Wor~4c590055-f8c6-44e1-8568-c88cc9f0a00f/collection/47511044-d04aa6e1-5daf-441e-a254-b3bcb9f78f57?action=share&source=collection_link&creator=47511044"
+	},
+	"item": [
+		{
+			"name": "Cadastrar Produto 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"const responseData = pm.response.json();\r",
+							"pm.environment.set(\"produto1_id\", responseData.id);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Tenis Corrida\",\r\n    \"price\": 199.90,\r\n    \"description\": \"Tenis leve para esportes\",\r\n    \"image\": \"https://i.pravatar.cc\",\r\n    \"category\": \"shoes\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://fakestoreapi.com/products",
+					"protocol": "https",
+					"host": [
+						"fakestoreapi",
+						"com"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cadastrar Produto 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"const responseData = pm.response.json();\r",
+							"pm.environment.set(\"produto2_id\", responseData.id);\r",
+							"\r",
+							"// Verificar se o ID é diferente do primeiro produto\r",
+							"const produto1_id = pm.environment.get(\"produto1_id\");\r",
+							"\r",
+							"pm.test(\"IDs dos produtos são distintos\", function () {\r",
+							"    pm.expect(responseData.id).not.eql(produto1_id);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"Relogio Digital\",\r\n  \"price\": 149.50,\r\n  \"description\": \"Relogio à prova d'agua\",\r\n  \"image\": \"https://i.pravatar.cc\",\r\n  \"category\": \"accessories\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://fakestoreapi.com/products",
+					"protocol": "https",
+					"host": [
+						"fakestoreapi",
+						"com"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Criar Carrinho",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"// Validar se retornou ID do carrinho\r",
+							"pm.test(\"ID do carrinho retornado\", function () {\r",
+							"    pm.expect(responseData.id).to.exist;\r",
+							"    pm.environment.set(\"cart_id\", responseData.id);\r",
+							"});\r",
+							"\r",
+							"// Validar produtos e quantidades\r",
+							"const products = responseData.products;\r",
+							"pm.test(\"Carrinho contém produtos corretos\", function () {\r",
+							"    const product1 = products.find(p => p.productId === parseInt(pm.environment.get(\"produto1_id\")));\r",
+							"    const product2 = products.find(p => p.productId === parseInt(pm.environment.get(\"produto2_id\")));\r",
+							"    \r",
+							"    pm.expect(product1).to.exist;\r",
+							"    pm.expect(product1.quantity).to.eql(2);\r",
+							"    \r",
+							"    pm.expect(product2).to.exist;\r",
+							"    pm.expect(product2.quantity).to.eql(1);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userId\": 5,\r\n  \"date\": \"2025-06-03\",\r\n  \"products\": [\r\n    { \"productId\": {{produto1_id}}, \"quantity\": 2 },\r\n    { \"productId\": {{produto2_id}}, \"quantity\": 1 }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://fakestoreapi.com/carts",
+					"protocol": "https",
+					"host": [
+						"fakestoreapi",
+						"com"
+					],
+					"path": [
+						"carts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Consultar Carrinho",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const responseData = pm.response.json();\r",
+							"const products = responseData.products;\r",
+							"\r",
+							"pm.test(\"Produtos e quantidades no carrinho estão corretos\", function () {\r",
+							"    const product1 = products.find(p => p.productId === parseInt(pm.environment.get(\"produto1_id\")));\r",
+							"    const product2 = products.find(p => p.productId === parseInt(pm.environment.get(\"produto2_id\")));\r",
+							"    \r",
+							"    pm.expect(product1).to.exist;\r",
+							"    pm.expect(product1.quantity).to.eql(2);\r",
+							"    \r",
+							"    pm.expect(product2).to.exist;\r",
+							"    pm.expect(product2.quantity).to.eql(1);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://fakestoreapi.com/carts/{{cart_id}}",
+					"protocol": "https",
+					"host": [
+						"fakestoreapi",
+						"com"
+					],
+					"path": [
+						"carts",
+						"{{cart_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remover Carrinho",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://fakestoreapi.com/carts/{{cart_id}}",
+					"protocol": "https",
+					"host": [
+						"fakestoreapi",
+						"com"
+					],
+					"path": [
+						"carts",
+						"{{cart_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
